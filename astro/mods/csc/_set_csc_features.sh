@@ -46,6 +46,11 @@ CSC_FEATURES=(
 "CscFeature_Camera_EnableCameraDuringCall|TRUE"
 "CscFeature_Message_SupportUsefulcard|TRUE"
 "CscFeature_NFC_ConfigReaderModeUI|KOREA"
+"CscFeature_Contact_EnableSmartCall|TRUE"
+"CscFeature_Setting_ConfigOperatorCallService|TRUE"
+"CscFeature_Common_ConfigHiyaService|TRUE"
+"CscFeature_Common_SupportRamPlus|TRUE"
+"CscFeature_VoiceCall_ConfigOpStyleForLogs|CnapLog"
 )
 
 
@@ -115,9 +120,6 @@ CSC_PROP() {
 
     LOG_INFO "Patching CSC features..."
     
-    # Add optics
-    ADD_FROM_FW "extra" "optics" "configs/carriers"
-    
     # Decode OMC XMLs
     DECODE_ALL_OMC
 
@@ -134,7 +136,7 @@ CSC_PROP() {
            -o -name "enforceskippingpackages.txt" \) \
         -delete
 
-    REMOVE "prism" "sipdb"
+    REMOVE "prism" "media"
 
     find "$WORKSPACE/prism/HWRDB/data" -type f \
     ! -name '*_en*' \
@@ -142,5 +144,17 @@ CSC_PROP() {
     -delete
 
     find "$WORKSPACE/prism" -type d -empty -delete
-
+    
+   
+    LOG_BEGIN "- Replacing csc partitions with SM-M515F"
+    find "$WORKSPACE/optics" -type f -exec \
+    sed -i -E "s/SM-[A-Z0-9]+/SM-M515F/g" {} +
+    find "$WORKSPACE/prism" -type f -exec \
+    sed -i -E "s/SM-[A-Z0-9]+/SM-M515F/g" {} +
+    sed -i 's/.*/M515FOXM6DXE4/' "$WORKSPACE/prism/etc/CSCVersion.txt"
+    xmlstarlet ed -L -u "//CSCName" -v "M515FOXM" "$WORKSPACE/prism/etc/SW_Configuration.xml"
+    xmlstarlet ed -L -u "//CSCVersion" -v "6DXE4" "$WORKSPACE/prism/etc/SW_Configuration.xml"
+    LOG_END
+    
+        
 LOG_END "CSC patches applied "
