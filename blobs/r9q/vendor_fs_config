@@ -1,0 +1,4 @@
+ 0 0 755 capabilities=0x0
+vendor/bin 0 2000 751 capabilities=0x0
+vendor/bin/hw 0 2000 751 capabilities=0x0
+vendor/bin/hw/vendor.samsung.hardware.light-service 0 2000 755 capabilities=0x0
