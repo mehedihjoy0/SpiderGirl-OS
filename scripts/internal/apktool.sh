@@ -34,7 +34,7 @@ CERT_PK8=""
 DECOMPILE_RES=true
 
 APK_TO_DECOMPILE_RES=(
-    product_overlay.apk
+    SamsungDeviceHealthManagerService.apk
     #wallpaper-res.apk
     #SecSettings.apk
     #SystemUI.apk
