@@ -20,7 +20,7 @@ ASTRO_CODENAME="$(GET_PROP "system" "ro.product.system.name" "stock")"
 if [[ -n "$ASTRO_CODENAME" ]]; then
     BPROP "system" "ro.astro.codename" "$ASTRO_CODENAME"
 else
-    BPROP "system" "ro.astro.codename" "$CODENAME"
+    BPROP "system" "ro.astro.codename" "$DEVICE_CODENAME"
 fi
 
 # Set source model as new prop
