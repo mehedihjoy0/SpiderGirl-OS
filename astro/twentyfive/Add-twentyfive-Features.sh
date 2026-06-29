@@ -35,8 +35,6 @@ ADD_FROM_FW "extra" "system" "lib64/libmediasndk.mediacore.samsung.so"
 ADD_FROM_FW "extra" "system" "lib64/libmediasndk.so"
 
 ADD_FROM_FW "extra" "system" "etc/audio_ae_intervals.conf"
-ADD_FROM_FW "extra" "system" "etc/audio_effects.xml"
-ADD_FROM_FW "extra" "system" "etc/audio_effects_common.conf"
 ADD_FROM_FW "extra" "system" "lib64/libmultisourceseparator.so"
 ADD_FROM_FW "extra" "system" "lib64/libmultisourceseparator.audio.samsung.so"
 ADD_FROM_FW "extra" "system" "etc/public.libraries-audio.samsung.txt"
