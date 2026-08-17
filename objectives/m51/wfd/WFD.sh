@@ -1,0 +1,1 @@
+ADD_FROM_FW "a73xq" "vendor" "bin/hw/wpa_supplicant"

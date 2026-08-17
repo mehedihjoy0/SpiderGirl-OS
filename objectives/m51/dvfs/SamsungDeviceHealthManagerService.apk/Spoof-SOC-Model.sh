@@ -1,0 +1,1 @@
+find . -name "*.smali" -exec sed -i -E 's|SM6375|SM7150|g' {} +
