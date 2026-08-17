@@ -14,9 +14,8 @@ FF "BATTERY_SUPPORT_SBP_INFO_SETTINGS" "TRUE"
 find . -type f -name "*.smali" | while read -r smali; do
     if grep -q "$BOMB_MODEL" "$smali"; then
 
-        # Replace bomb / plant
+        # Replace bomb / 
         sed -i "s/$BOMB_MODEL/$DEVICE_MODEL/g" "$smali"
-
         sed -i "s/$OLD_PROP/$NEW_PROP/g" "$smali"
 
     fi
