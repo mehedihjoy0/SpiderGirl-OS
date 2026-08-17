@@ -51,5 +51,6 @@ fi
 fi
 
 if ! GET_FEATURE DEVICE_HAVE_HIGH_REFRESH_RATE; then
+    FF "LCD_CONFIG_HFR_SUPPORTED_REFRESH_RATE" "$DEVICE_DISPLAY_REFRESH_RATE_VALUES_HZ"
     ADD_PATCH "SecSettings.apk" "$SCRPATH/patches/Disable-High-Refresh-Rate-Settings.smalipatch"
 fi

@@ -5,13 +5,8 @@ if ! GET_FEATURE DEVICE_USE_STOCK_BASE; then
         LOG_END "No eSIM changes required"
     else
         LOG_BEGIN "Device does NOT support eSIM, removing blobs"
-            NUKE_BLOAT "EsimKeyString" "EuiccService"
-
-            REMOVE "system" "etc/permissions/privapp-permissions-com.samsung.android.app.esimkeystring.xml"
-            REMOVE "system" "etc/permissions/privapp-permissions-com.samsung.euicc.xml"
-            REMOVE "system" "etc/sysconfig/preinstalled-packages-com.samsung.android.app.esimkeystring.xml"
-            REMOVE "system" "etc/sysconfig/preinstalled-packages-com.samsung.euicc.xml"
-
+            find "$WORKSPACE/system/system" -iname "*esim*" -o -iname "*euicc*" -exec rm -rf {} +
+        
             FF "COMMON_CONFIG_EMBEDDED_SIM_SLOTSWITCH" ""
         LOG_END "eSIM blobs removed"
         fi

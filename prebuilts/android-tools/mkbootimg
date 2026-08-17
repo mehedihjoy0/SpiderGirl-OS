@@ -28,7 +28,15 @@ import os
 import re
 import tempfile
 
-from gki.generate_gki_certificate import generate_gki_certificate
+try:
+    from gki.generate_gki_certificate import generate_gki_certificate
+except ModuleNotFoundError as exc:
+    # GKI signing support is optional when creating ordinary boot images.
+    # The gki package is required only when --gki_signing_key and
+    # --gki_signing_algorithm are both supplied.
+    if exc.name != "gki" and not (exc.name or "").startswith("gki."):
+        raise
+    generate_gki_certificate = None
 
 # Constant and structure definition is in
 # system/tools/mkbootimg/include/bootimg/bootimg.h
@@ -587,6 +595,12 @@ def add_boot_image_signature(args, pagesize):
     vbmeta partition) via the Android Verified Boot process, when the
     device boots.
     """
+    if generate_gki_certificate is None:
+        raise RuntimeError(
+            "GKI signing was requested, but the 'gki' Python package is missing. "
+            "Bundle the AOSP mkbootimg/gki directory beside this script."
+        )
+
     # Flush the buffer for signature calculation.
     args.output.flush()
 

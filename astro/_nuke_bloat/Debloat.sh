@@ -6,9 +6,16 @@
 #
 # ==============================================================================
 
+# Deodex
+find "$WORKSPACE/product" -type d -name "oat" -exec rm -rf {} +
+find "$WORKSPACE/system" -type d -name "oat" -exec rm -rf {} +
+find "$WORKSPACE/system" -type f -name "*.vdex" -exec rm -f {} +
+find "$WORKSPACE/system" -type f -name "*.fsv_meta" -exec rm -f {} +
 
-# Nuke odex files
-find $WORKSPACE/system/system/ -type f \( -name "*.odex" -o -name "*.vdex" -o -name "*.art" -o -name "*.oat" \) -delete
+SILENT REMOVE "system" "framework/arm"
+SILENT REMOVE "system" "framework/arm64"
+SILENT REMOVE "system" "etc/boot-image.bprof"
+SILENT REMOVE "system" "etc/boot-image.prof"
 
 # Remove folders
 SILENT REMOVE "system" "hidden"
