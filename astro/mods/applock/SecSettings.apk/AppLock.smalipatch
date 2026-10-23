@@ -1,4 +1,4 @@
-FILE smali_classes2/com/samsung/android/settings/usefulfeature/applock/AppLockPreferenceController.smali
+FILE */com/samsung/android/settings/usefulfeature/applock/AppLockPreferenceController.smali
 REPLACE .method public getAvailabilityStatus()I
     .locals 1
 
