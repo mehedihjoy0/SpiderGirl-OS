@@ -1,6 +1,6 @@
 AUTHOR: Salvo Giangreco <giangrecosalvo9@gmail.com>
 
-FILE smali/com/samsung/android/secsoundpicker/util/PickerRune.smali
+FILE */com/samsung/android/secsoundpicker/util/PickerRune.smali
 REPLACE .method static constructor <clinit>()V
     .locals 4
 
