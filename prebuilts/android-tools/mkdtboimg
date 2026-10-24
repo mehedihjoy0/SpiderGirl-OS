@@ -21,6 +21,7 @@ import argparse
 import fnmatch
 import os
 import struct
+import subprocess
 import zlib
 from array import array
 from collections import namedtuple
@@ -32,6 +33,7 @@ class CompressionFormat(object):
     NO_COMPRESSION = 0x00
     ZLIB_COMPRESSION = 0x01
     GZIP_COMPRESSION = 0x02
+    LZ4_COMPRESSION = 0x03
 
 class DtEntry(object):
     """Provides individual DT image file arguments to be added to a DTBO.
@@ -367,6 +369,13 @@ class Dtbo(object):
                                         self.__file.read(self.__metadata_size))
         self._read_dt_entries_from_metadata()
 
+    def _write_padding_bytes(self):
+        """Append padding bytes to align DTB/DTBO img to the next page size"""
+        padding_size = (self.page_size - (self.total_size % self.page_size)) % self.page_size
+        if padding_size:
+            padding_data = b'\x00' * padding_size
+            self.__file.write(padding_data)
+
     def _find_dt_entry_with_same_file(self, dt_entry):
         """Finds DT Entry that has identical backing DT file.
 
@@ -461,6 +470,7 @@ class Dtbo(object):
             CompressionFormat.NO_COMPRESSION: None,
             CompressionFormat.ZLIB_COMPRESSION: compress_zlib,
             CompressionFormat.GZIP_COMPRESSION: compress_gzip,
+            CompressionFormat.LZ4_COMPRESSION: None,
         }
 
         if compression_format not in compression_obj_dict:
@@ -468,6 +478,15 @@ class Dtbo(object):
 
         if compression_format is CompressionFormat.NO_COMPRESSION:
             dt_entry = dt_entry_file.read()
+        elif compression_format is CompressionFormat.LZ4_COMPRESSION:
+            dt_entry_file.seek(0)
+            compression_cmd = ['lz4', '-12', '--favor-decSpeed']
+            result = subprocess.run(compression_cmd, check=True,
+                                    input=dt_entry_file.read(), capture_output=True)
+            if result.stderr:
+                dt_entry = None
+            else:
+                dt_entry = result.stdout
         else:
             compression_object = compression_obj_dict[compression_format]
             dt_entry_file.seek(0)
@@ -550,6 +569,12 @@ class Dtbo(object):
             if (compression_format == CompressionFormat.ZLIB_COMPRESSION or
                 compression_format == CompressionFormat.GZIP_COMPRESSION):
                 fout.write(zlib.decompress(self.__file.read(size), self._ZLIB_DECOMPRESSION_WBITS))
+            elif compression_format == CompressionFormat.LZ4_COMPRESSION:
+                decompression_cmd = ['lz4', '-d', '-c']
+                result = subprocess.run(decompression_cmd, check=False,
+                                        input=self.__file.read(size), capture_output=True)
+                if not result.stderr:
+                    fout.write(result.stdout)
             else:
                 raise ValueError("Unknown compression format detected")
         else:
@@ -577,6 +602,7 @@ class Dtbo(object):
         self.__file.seek(0)
         self.__file.write(self.__metadata)
         self.__file.write(dt_entry_buf)
+        self._write_padding_bytes()
         self.__file.flush()
 
 
